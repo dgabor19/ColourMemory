@@ -10,17 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.adapters.GridAdapter;
+import com.accedo.colourmemory.interfaces.OnCardFlipListener;
+import com.accedo.colourmemory.utils.CardUtils;
 import com.accedo.colourmemory.utils.Constants;
 import com.accedo.colourmemory.utils.Converter;
+import com.nineoldandroids.animation.Animator;
 
 /**
  * Created by gabordudas on 18/04/16.
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements OnCardFlipListener {
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private RecyclerView mGrid;
@@ -52,7 +56,7 @@ public class MainFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mGrid = (RecyclerView) view.findViewById(R.id.gridMain);
-        mAdapter = new GridAdapter(getActivity());
+        mAdapter = new GridAdapter(getActivity(), this);
         mLayoutManager = new GridLayoutManager(getActivity(), Constants.COLUMN_COUNT);
 
         mGrid.setAdapter(mAdapter);
@@ -64,6 +68,20 @@ public class MainFragment extends Fragment {
                         (int) Converter.convertDpToPixels(getActivity(), 10),
                         true));
 
+    }
+
+    @Override
+    public void onCardFlip(View view, final GridAdapter.ViewHolder holder, int position) {
+        Toast.makeText(getActivity(), "Card flipped on position " + holder.mPosition, Toast.LENGTH_LONG).show();
+
+
+        CardUtils.flip(holder.itemView, null);
+        holder.itemView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                holder.mFlipper.showNext();
+            }
+        }, 200);
     }
 
 
