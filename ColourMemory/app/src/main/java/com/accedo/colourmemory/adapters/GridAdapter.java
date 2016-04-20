@@ -1,6 +1,7 @@
 package com.accedo.colourmemory.adapters;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +12,15 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import com.accedo.colourmemory.MainActivity;
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.interfaces.OnCardFlipListener;
-import com.accedo.colourmemory.models.Colour;
+import com.accedo.colourmemory.models.Card;
 import com.accedo.colourmemory.utils.CardGenerator;
+import com.accedo.colourmemory.utils.CardUtils;
 import com.accedo.colourmemory.utils.Constants;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 import java.util.List;
 
@@ -27,13 +32,15 @@ public class GridAdapter extends RecyclerView.Adapter {
     public static final String TAG = GridAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<Colour> mColours;
+    private List<Card> mCards;
     private OnCardFlipListener mCardFlipListener;
+    private Handler mHandler;
 
     public GridAdapter(Context c, OnCardFlipListener listener) {
         mContext = c;
-        mColours = CardGenerator.getShuffledCards(Constants.CARD_COUNT);
+        mCards = CardGenerator.getShuffledCards();
         mCardFlipListener = listener;
+        mHandler = new Handler();
     }
 
     @Override
@@ -42,14 +49,13 @@ public class GridAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder vHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder vHolder, final int position) {
         final ViewHolder holder = (ViewHolder) vHolder;
 
-        holder.mPosition = position;
-        holder.mFrontImage.setImageResource(mColours.get(position).resId);
-//        holder.mFlipper.setInAnimation();
-//        holder.mFlipper.setInAnimation(mContext, android.R.anim.slide_in_left);
-//        holder.mFlipper.setOutAnimation(mContext, android.R.anim.slide_out_right);
+        Card card = mCards.get(position);
+
+        holder.mFaceImage.setImageResource(card.getColour().resId);
+
     }
 
     public long getItemId(int position) {
@@ -58,15 +64,21 @@ public class GridAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return mColours.size();
+        return mCards.size();
     }
 
+    public List<Card> getCards() {
+        return mCards;
+    }
+
+    public Card getCard(int position) {
+        return mCards.get(position);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ViewFlipper mFlipper;
         public ImageView mBackImage;
-        public ImageView mFrontImage;
-        public int mPosition;
+        public ImageView mFaceImage;
         private OnCardFlipListener mListener;
 
         public ViewHolder(View itemView, OnCardFlipListener listener) {
@@ -75,18 +87,16 @@ public class GridAdapter extends RecyclerView.Adapter {
             mListener = listener;
 
             mFlipper = (ViewFlipper) itemView.findViewById(R.id.flipperCard);
-            mFrontImage = (ImageView) itemView.findViewById(R.id.imageFrontCard);
+            mFaceImage = (ImageView) itemView.findViewById(R.id.imageFaceCard);
             mBackImage = (ImageView) itemView.findViewById(R.id.imageBackCard);
 
-            itemView.setTag(mPosition);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if (mListener != null) {
-                final int pos = (int) v.getTag();
-                mListener.onCardFlip(v, this, pos);
+                mListener.onCardFlip(v, this, getAdapterPosition());
             }
         }
     }

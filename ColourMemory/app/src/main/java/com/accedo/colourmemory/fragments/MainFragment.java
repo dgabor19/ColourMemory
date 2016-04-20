@@ -2,19 +2,23 @@ package com.accedo.colourmemory.fragments;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.accedo.colourmemory.MainActivity;
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.adapters.GridAdapter;
 import com.accedo.colourmemory.interfaces.OnCardFlipListener;
+import com.accedo.colourmemory.models.Card;
 import com.accedo.colourmemory.utils.CardUtils;
 import com.accedo.colourmemory.utils.Constants;
 import com.accedo.colourmemory.utils.Converter;
@@ -27,9 +31,11 @@ import com.nineoldandroids.animation.Animator;
 public class MainFragment extends Fragment implements OnCardFlipListener {
     public static final String TAG = MainFragment.class.getSimpleName();
 
+    private MainActivity mActivity;
     private RecyclerView mGrid;
     private GridAdapter mAdapter;
     private GridLayoutManager mLayoutManager;
+    private Handler mHandler;
 
     public MainFragment() {
 
@@ -43,6 +49,9 @@ public class MainFragment extends Fragment implements OnCardFlipListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mActivity = (MainActivity) getActivity();
+        mHandler = mActivity.getHandler();
     }
 
     @Nullable
@@ -56,8 +65,8 @@ public class MainFragment extends Fragment implements OnCardFlipListener {
         super.onViewCreated(view, savedInstanceState);
 
         mGrid = (RecyclerView) view.findViewById(R.id.gridMain);
-        mAdapter = new GridAdapter(getActivity(), this);
-        mLayoutManager = new GridLayoutManager(getActivity(), Constants.COLUMN_COUNT);
+        mAdapter = new GridAdapter(mActivity, this);
+        mLayoutManager = new GridLayoutManager(mActivity, Constants.COLUMN_COUNT);
 
         mGrid.setAdapter(mAdapter);
         mGrid.setLayoutManager(mLayoutManager);
@@ -65,23 +74,87 @@ public class MainFragment extends Fragment implements OnCardFlipListener {
         mGrid.addItemDecoration(
                 new GridSpacingItemDecoration(
                         Constants.COLUMN_COUNT,
-                        (int) Converter.convertDpToPixels(getActivity(), 10),
+                        (int) Converter.convertDpToPixels(mActivity, 10),
                         true));
 
     }
 
+    int faceUpCounter = 0;
+
     @Override
-    public void onCardFlip(View view, final GridAdapter.ViewHolder holder, int position) {
-        Toast.makeText(getActivity(), "Card flipped on position " + holder.mPosition, Toast.LENGTH_LONG).show();
+    public void onCardFlip(View view, final GridAdapter.ViewHolder holder, final int position) {
+//        Toast.makeText(mActivity, "Card flipped on position " + holder.mPosition, Toast.LENGTH_SHORT).show();
 
+        Log.d(TAG, "CARD FLIPPED position " + position);
 
-        CardUtils.flip(holder.itemView, null);
-        holder.itemView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                holder.mFlipper.showNext();
+        animateCardFlip(holder, position);
+
+        if (mAdapter != null) {
+            Card card = mAdapter.getCard(position);
+
+            if (card.isFaceUp()) {
+                ++faceUpCounter;
+            } else {
+                --faceUpCounter;
             }
-        }, 200);
+
+
+            Log.d(TAG, "CARD FLIPPED faceUpCounter " + faceUpCounter);
+
+            if (faceUpCounter == 2) {
+                faceUpCounter = 0;
+                for (Card c : mAdapter.getCards()) {
+
+                    if (c.isFaceUp()) {
+                        Log.d(TAG, "CARD FLIPPED BACK " + c.getColour() + " isFaceUp " + c.isFaceUp());
+                        c.setFaceUp(false);
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                CardUtils.flipOut(mActivity, holder.itemView, null);
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        holder.mFlipper.showPrevious();
+                                    }
+                                }, getResources().getInteger(R.integer.card_flip_time) / 2);
+                            }
+                        }, 1000);
+                    }
+                }
+            }
+        }
+    }
+
+    private void animateCardFlip(final GridAdapter.ViewHolder holder, final int position) {
+
+        if (mAdapter != null) {
+            Card card = mAdapter.getCard(position);
+
+            if (!card.isFaceUp()) {
+                card.setFaceUp(true);
+
+                CardUtils.flipIn(mActivity, holder.itemView, null);
+                holder.itemView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.mFlipper.showNext();
+                    }
+                }, getResources().getInteger(R.integer.card_flip_time) / 2);
+
+            } else {
+                card.setFaceUp(false);
+
+                CardUtils.flipOut(mActivity, holder.itemView, null);
+                holder.itemView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.mFlipper.showPrevious();
+                    }
+                }, getResources().getInteger(R.integer.card_flip_time) / 2);
+            }
+        }
     }
 
 

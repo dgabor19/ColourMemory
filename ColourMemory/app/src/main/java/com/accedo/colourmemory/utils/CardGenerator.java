@@ -1,6 +1,6 @@
 package com.accedo.colourmemory.utils;
 
-import com.accedo.colourmemory.models.Colour;
+import com.accedo.colourmemory.models.Card;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,22 +14,33 @@ import java.util.List;
 public class CardGenerator {
     public static final String TAG = CardGenerator.class.getSimpleName();
 
-    private static List<Colour> AVAILABLE_CARDS = Arrays.asList(
-            Colour.RED,
-            Colour.YELLOW,
-            Colour.GREEN,
-            Colour.GREENISH_BLUE,
-            Colour.BLUE,
-            Colour.DARK_BLUE,
-            Colour.PURPLE,
-            Colour.BROWN
-
+    private static List<Card> AVAILABLE_CARDS = Arrays.asList(
+            new Card(Card.Colour.RED, false),
+            new Card(Card.Colour.YELLOW, false),
+            new Card(Card.Colour.GREEN, false),
+            new Card(Card.Colour.GREENISH_BLUE, false),
+            new Card(Card.Colour.BLUE, false),
+            new Card(Card.Colour.DARK_BLUE, false),
+            new Card(Card.Colour.PURPLE, false),
+            new Card(Card.Colour.BROWN, false),
+            new Card(Card.Colour.RED, false),
+            new Card(Card.Colour.YELLOW, false),
+            new Card(Card.Colour.GREEN, false),
+            new Card(Card.Colour.GREENISH_BLUE, false),
+            new Card(Card.Colour.BLUE, false),
+            new Card(Card.Colour.DARK_BLUE, false),
+            new Card(Card.Colour.PURPLE, false),
+            new Card(Card.Colour.BROWN, false)
     );
 
-    public static List<Colour> getShuffledCards(int cardsNum) {
-        List<Colour> shuffledCards = new ArrayList<>();
-        shuffledCards.addAll(AVAILABLE_CARDS);
-        shuffledCards.addAll(AVAILABLE_CARDS);
+    /**
+     * Generates shuffled card set
+     *
+     * @return
+     */
+    public static List<Card> getShuffledCards() {
+        List<Card> shuffledCards = Arrays.asList(new Card[16]);
+        Collections.copy(shuffledCards, AVAILABLE_CARDS);
 
         Collections.shuffle(shuffledCards);
 

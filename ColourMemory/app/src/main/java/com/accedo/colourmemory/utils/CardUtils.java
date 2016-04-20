@@ -3,6 +3,9 @@ package com.accedo.colourmemory.utils;
 import android.content.Context;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+
+import com.accedo.colourmemory.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 
@@ -12,14 +15,35 @@ import com.nineoldandroids.animation.ObjectAnimator;
  */
 public class CardUtils {
 
-    public static void flip(View view, Animator.AnimatorListener listener) {
+    public static void flipIn(Context context, View view, Animator.AnimatorListener listener) {
 
-        ObjectAnimator animation = ObjectAnimator.ofFloat(view, "rotationY", 0.0f, 180.0f);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotationY", -180.0f, 0.0f);
         if (listener != null) {
-            animation.addListener(listener);
+            animator.addListener(listener);
         }
-        animation.setDuration(400);
-        animation.setInterpolator(new AccelerateInterpolator());
-        animation.start();
+        animator.setDuration(context.getResources().getInteger(R.integer.card_flip_time));
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.start();
+    }
+
+    public static void flipOut(Context context, View view, Animator.AnimatorListener listener) {
+
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotationY", 0.0f, -180.0f);
+        if (listener != null) {
+            animator.addListener(listener);
+        }
+        animator.setDuration(context.getResources().getInteger(R.integer.card_flip_time));
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.start();
+    }
+
+    public static void fadeIn(Context context, View view, Animator.AnimatorListener listener) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "alpha", 0.0f, 1.0f);
+        if (listener != null) {
+            animator.addListener(listener);
+        }
+        animator.setDuration(context.getResources().getInteger(R.integer.card_flip_time));
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
     }
 }
