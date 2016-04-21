@@ -1,5 +1,6 @@
 package com.accedo.colourmemory.fragments;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +23,10 @@ import com.accedo.colourmemory.models.Card;
 import com.accedo.colourmemory.utils.CardUtils;
 import com.accedo.colourmemory.utils.Constants;
 import com.accedo.colourmemory.utils.Converter;
+import com.accedo.colourmemory.utils.FlipAnimation;
 import com.nineoldandroids.animation.Animator;
+
+import java.util.List;
 
 /**
  * Created by gabordudas on 18/04/16.
@@ -74,86 +78,72 @@ public class MainFragment extends Fragment implements OnCardFlipListener {
         mGrid.addItemDecoration(
                 new GridSpacingItemDecoration(
                         Constants.COLUMN_COUNT,
-                        (int) Converter.convertDpToPixels(mActivity, 10),
+//                        (int) Converter.convertDpToPixels(mActivity, 3),
+                        0,
                         true));
 
     }
 
-    int faceUpCounter = 0;
 
     @Override
     public void onCardFlip(View view, final GridAdapter.ViewHolder holder, final int position) {
 //        Toast.makeText(mActivity, "Card flipped on position " + holder.mPosition, Toast.LENGTH_SHORT).show();
 
-        Log.d(TAG, "CARD FLIPPED position " + position);
+//        Log.d(TAG, "CARD FLIPPED position " + position);
 
-        animateCardFlip(holder, position);
+        CardUtils.animateCardFlip(mActivity, mAdapter, holder, position);
 
         if (mAdapter != null) {
-            Card card = mAdapter.getCard(position);
 
-            if (card.isFaceUp()) {
-                ++faceUpCounter;
-            } else {
-                --faceUpCounter;
+//            mAdapter.setCardFlipperEnabler(true);
+//            mAdapter.notifyItemChanged(position);
+//            mAdapter.getCard(position).setFaceUp(!mAdapter.getCard(position).isFaceUp());
+//            mAdapter.notifyItemChanged(position);
+
+            List<Card> cards = mAdapter.getCards();
+
+            int faceUpCounter = 0;
+
+            for (int i = 0; i < cards.size(); i++) {
+                Card card = mAdapter.getCard(i);
+
+                if (card.isFaceUp()) {
+                    ++faceUpCounter;
+                }
             }
 
 
             Log.d(TAG, "CARD FLIPPED faceUpCounter " + faceUpCounter);
 
-            if (faceUpCounter == 2) {
-                faceUpCounter = 0;
-                for (Card c : mAdapter.getCards()) {
+//            if (faceUpCounter == 2) {
+//                faceUpCounter = 0;
+//                for (int i = 0; i < mAdapter.getCards().size(); i++) {
+//                    Card c = mAdapter.getCard(i);
+//
+//                    if (c.isFaceUp()) {
 
-                    if (c.isFaceUp()) {
-                        Log.d(TAG, "CARD FLIPPED BACK " + c.getColour() + " isFaceUp " + c.isFaceUp());
-                        c.setFaceUp(false);
-
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                CardUtils.flipOut(mActivity, holder.itemView, null);
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        holder.mFlipper.showPrevious();
-                                    }
-                                }, getResources().getInteger(R.integer.card_flip_time) / 2);
-                            }
-                        }, 1000);
-                    }
-                }
-            }
-        }
-    }
-
-    private void animateCardFlip(final GridAdapter.ViewHolder holder, final int position) {
-
-        if (mAdapter != null) {
-            Card card = mAdapter.getCard(position);
-
-            if (!card.isFaceUp()) {
-                card.setFaceUp(true);
-
-                CardUtils.flipIn(mActivity, holder.itemView, null);
-                holder.itemView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        holder.mFlipper.showNext();
-                    }
-                }, getResources().getInteger(R.integer.card_flip_time) / 2);
-
-            } else {
-                card.setFaceUp(false);
-
-                CardUtils.flipOut(mActivity, holder.itemView, null);
-                holder.itemView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        holder.mFlipper.showPrevious();
-                    }
-                }, getResources().getInteger(R.integer.card_flip_time) / 2);
-            }
+//                        c.setFaceUp(false);
+//
+//                        final int finalI = i;
+//
+////                        mHandler.postDelayed(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                CardUtils.flipOut(mActivity, holder.itemView, null);
+//
+////                                mHandler.postDelayed(new Runnable() {
+////                                    @Override
+////                                    public void run() {
+//                                        Log.d(TAG, "CARD FLIPPED Notified item " + finalI);
+//                                        mAdapter.notifyItemChanged(finalI);
+////                                        holder.mFlipper.showPrevious();
+////                                    }
+////                                }, getResources().getInteger(R.integer.card_flip_time) / 2);
+////                            }
+////                        }, 1000);
+//                    }
+//                }
+//            }
         }
     }
 

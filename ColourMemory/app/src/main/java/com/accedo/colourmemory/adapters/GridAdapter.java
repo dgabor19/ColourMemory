@@ -2,7 +2,10 @@ package com.accedo.colourmemory.adapters;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +39,8 @@ public class GridAdapter extends RecyclerView.Adapter {
     private OnCardFlipListener mCardFlipListener;
     private Handler mHandler;
 
+    private boolean mCardFlipperEnabler = false;
+
     public GridAdapter(Context c, OnCardFlipListener listener) {
         mContext = c;
         mCards = CardGenerator.getShuffledCards();
@@ -54,8 +59,40 @@ public class GridAdapter extends RecyclerView.Adapter {
 
         Card card = mCards.get(position);
 
+//        if (card.isFaceUp()) {
+//            card.setFaceUp(false);
+//
+//            mHandler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    CardUtils.flipOut(mContext, holder.itemView, null);
+//
+//                    mHandler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            holder.mFlipper.showPrevious();
+//                        }
+//                    }, mContext.getResources().getInteger(R.integer.card_flip_time) / 2);
+//                }
+//            }, 1000);
+//
+//        }
+
         holder.mFaceImage.setImageResource(card.getColour().resId);
 
+//        if (!card.isFaceUp()) {
+//            CardUtils.animateCardFlip(mContext, this, holder, position);
+//        }
+
+//        if (mCardFlipperEnabler) {
+//            mCardFlipperEnabler = false;
+//            CardUtils.animateCardFlip(mContext, this, holder, position);
+//        }
+
+    }
+
+    public void setCardFlipperEnabler(boolean isEnabled) {
+        mCardFlipperEnabler = isEnabled;
     }
 
     public long getItemId(int position) {
@@ -76,19 +113,18 @@ public class GridAdapter extends RecyclerView.Adapter {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public ViewFlipper mFlipper;
         public ImageView mBackImage;
         public ImageView mFaceImage;
+        public CardView mCard;
         private OnCardFlipListener mListener;
 
         public ViewHolder(View itemView, OnCardFlipListener listener) {
             super(itemView);
 
             mListener = listener;
-
-            mFlipper = (ViewFlipper) itemView.findViewById(R.id.flipperCard);
             mFaceImage = (ImageView) itemView.findViewById(R.id.imageFaceCard);
             mBackImage = (ImageView) itemView.findViewById(R.id.imageBackCard);
+            mCard = (CardView) itemView.findViewById(R.id.card);
 
             itemView.setOnClickListener(this);
         }
