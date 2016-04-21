@@ -1,15 +1,10 @@
 package com.accedo.colourmemory.utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 
 import com.accedo.colourmemory.R;
-import com.accedo.colourmemory.adapters.GridAdapter;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.ObjectAnimator;
+import com.accedo.colourmemory.models.Card;
 
 /**
  * Created by gabordudas on 19/04/16.
@@ -18,54 +13,21 @@ import com.nineoldandroids.animation.ObjectAnimator;
 public class CardUtils {
     public static final String TAG = CardUtils.class.getSimpleName();
 
-    public static void animateCardFlip(Context context, GridAdapter adapter, GridAdapter.ViewHolder holder, int position) {
+    public static void animateCardFlip(Context context, View cardItem, Card card) {
 
-        FlipAnimation flipAnimation = new FlipAnimation(context, holder.mBackImage, holder.mFaceImage);
+        View backView = cardItem.findViewById(R.id.imageBackCard);
+        View faceView = cardItem.findViewById(R.id.imageFaceCard);
+        View cardView = cardItem.findViewById(R.id.card);
 
-        if (adapter != null) {
-            boolean isFaceUp = holder.mFaceImage.getVisibility() == View.VISIBLE;
-            if (isFaceUp) {
-                flipAnimation.reverse();
+        FlipAnimation flipAnimation = new FlipAnimation(context, backView, faceView);
 
-            }
+        boolean isFaceUp = faceView.getVisibility() == View.VISIBLE;
+        if (isFaceUp) {
+            flipAnimation.reverse();
 
-            adapter.getCard(position).setFaceUp(!isFaceUp);
-
-            Log.d(TAG, "CARD SET " + position + " " + !isFaceUp);
-
-            holder.mCard.startAnimation(flipAnimation);
         }
-    }
 
-    public static void flipIn(Context context, View view, Animator.AnimatorListener listener) {
+        cardView.startAnimation(flipAnimation);
 
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotationY", -180.0f, 0.0f);
-        if (listener != null) {
-            animator.addListener(listener);
-        }
-        animator.setDuration(context.getResources().getInteger(R.integer.card_flip_time));
-        animator.setInterpolator(new AccelerateInterpolator());
-        animator.start();
-    }
-
-    public static void flipOut(Context context, View view, Animator.AnimatorListener listener) {
-
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotationY", 0.0f, -180.0f);
-        if (listener != null) {
-            animator.addListener(listener);
-        }
-        animator.setDuration(context.getResources().getInteger(R.integer.card_flip_time));
-        animator.setInterpolator(new AccelerateInterpolator());
-        animator.start();
-    }
-
-    public static void fadeIn(Context context, View view, Animator.AnimatorListener listener) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "alpha", 0.0f, 1.0f);
-        if (listener != null) {
-            animator.addListener(listener);
-        }
-        animator.setDuration(context.getResources().getInteger(R.integer.card_flip_time));
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.start();
     }
 }

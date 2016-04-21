@@ -39,7 +39,7 @@ public class CardGenerator {
      * @return
      */
     public static List<Card> getShuffledCards() {
-        List<Card> shuffledCards = Arrays.asList(new Card[16]);
+        List<Card> shuffledCards = Arrays.asList(new Card[AVAILABLE_CARDS.size()]);
         Collections.copy(shuffledCards, AVAILABLE_CARDS);
 
         Collections.shuffle(shuffledCards);

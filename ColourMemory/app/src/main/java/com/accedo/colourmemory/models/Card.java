@@ -32,6 +32,14 @@ public class Card {
         isFaceUp = faceUp;
     }
 
+    @Override
+    public String toString() {
+        return "Card{" +
+                "colour=" + colour +
+                ", isFaceUp=" + isFaceUp +
+                '}';
+    }
+
     public enum Colour {
         RED(R.drawable.colour1),
         YELLOW(R.drawable.colour2),
