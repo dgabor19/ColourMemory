@@ -14,7 +14,7 @@ import java.util.List;
 public class CardGenerator {
     public static final String TAG = CardGenerator.class.getSimpleName();
 
-    private static List<Card> AVAILABLE_CARDS = Arrays.asList(
+    private List<Card> AVAILABLE_CARDS = Arrays.asList(
             new Card(Card.Colour.RED, false, false),
             new Card(Card.Colour.YELLOW, false, false),
             new Card(Card.Colour.GREEN, false, false),
@@ -33,12 +33,20 @@ public class CardGenerator {
             new Card(Card.Colour.BROWN, false, false)
     );
 
+    private CardGenerator() {
+
+    }
+
+    public static CardGenerator newInstance() {
+        return new CardGenerator();
+    }
+
     /**
      * Generates shuffled card set
      *
      * @return
      */
-    public static List<Card> getShuffledCards() {
+    public List<Card> getShuffledCards() {
         List<Card> shuffledCards = Arrays.asList(new Card[AVAILABLE_CARDS.size()]);
         Collections.copy(shuffledCards, AVAILABLE_CARDS);
 

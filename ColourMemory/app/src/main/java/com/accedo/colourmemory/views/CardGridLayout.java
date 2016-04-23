@@ -50,7 +50,7 @@ public class CardGridLayout extends GridLayout {
         setRowCount(rowCount);
         mListener = listener;
 
-        mCards = CardGenerator.getShuffledCards();
+        mCards = CardGenerator.newInstance().getShuffledCards();
 
         for (int i = 0; i < mCards.size(); i++) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_card, this, false);

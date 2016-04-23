@@ -1,6 +1,8 @@
 package com.accedo.colourmemory;
 
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     private Handler mHandler = new Handler();
     private int mScore = 0;
+    private FragmentManager mFragmentManager;
 
     public enum InteractionType {
         SCORE
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFragmentManager = getSupportFragmentManager();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, MainFragment.newInstance(), MainFragment.TAG).commit();
@@ -47,9 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                     }
 
                 }
-
                 break;
-
         }
     }
 }
