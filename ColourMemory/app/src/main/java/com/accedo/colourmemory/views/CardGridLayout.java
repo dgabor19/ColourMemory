@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.accedo.colourmemory.R;
+import com.accedo.colourmemory.interfaces.OnScoringListener;
 import com.accedo.colourmemory.models.Card;
 import com.accedo.colourmemory.utils.CardGenerator;
 import com.accedo.colourmemory.utils.CardUtils;
+import com.accedo.colourmemory.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public class CardGridLayout extends GridLayout {
     public static final String TAG = CardGridLayout.class.getSimpleName();
 
     private List<Card> mCards;
+    private OnScoringListener mListener;
 
     public CardGridLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -41,10 +44,11 @@ public class CardGridLayout extends GridLayout {
 
     }
 
-    public void init(int columnCount, int rowCount) {
+    public void init(int columnCount, int rowCount, OnScoringListener listener) {
 
         setColumnCount(columnCount);
         setRowCount(rowCount);
+        mListener = listener;
 
         mCards = CardGenerator.getShuffledCards();
 
@@ -100,7 +104,9 @@ public class CardGridLayout extends GridLayout {
 
                             // Finding the cards match
                             if (otherCardFaceUp != null && card.getColour() == otherCardFaceUp.getColour()) {
-                                Toast.makeText(getContext(), "MATCH!!! " + card.getColour(), Toast.LENGTH_LONG).show();
+                                if (mListener != null) {
+                                    mListener.onScore(Constants.MATCH_SCORE);
+                                }
 
                                 card.setPaired(true);
                                 otherCardFaceUp.setPaired(true);
@@ -129,6 +135,10 @@ public class CardGridLayout extends GridLayout {
                                             CardUtils.animateCardFlip(getContext(), getChildAt(i), card);
 
                                             card.setFaceUp(false);
+                                        }
+
+                                        if (mListener != null) {
+                                            mListener.onScore(Constants.NO_MATCH_SCORE);
                                         }
                                     }
                                 }, 1000);

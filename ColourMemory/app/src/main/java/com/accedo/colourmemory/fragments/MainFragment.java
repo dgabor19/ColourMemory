@@ -1,5 +1,6 @@
 package com.accedo.colourmemory.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 
 import com.accedo.colourmemory.MainActivity;
 import com.accedo.colourmemory.R;
+import com.accedo.colourmemory.interfaces.OnFragmentInteractionListener;
+import com.accedo.colourmemory.interfaces.OnScoringListener;
 import com.accedo.colourmemory.utils.Constants;
 import com.accedo.colourmemory.views.CardGridLayout;
 
@@ -17,12 +20,13 @@ import com.accedo.colourmemory.views.CardGridLayout;
  * Created by gabordudas on 18/04/16.
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements OnScoringListener {
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private MainActivity mActivity;
     private CardGridLayout mGrid;
     private Handler mHandler;
+    protected OnFragmentInteractionListener mListener;
 
     public MainFragment() {
 
@@ -52,7 +56,30 @@ public class MainFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mGrid = (CardGridLayout) view.findViewById(R.id.gridMain);
-        mGrid.init(Constants.COLUMN_COUNT, Constants.ROW_COUNT);
+        mGrid.init(Constants.COLUMN_COUNT, Constants.ROW_COUNT, this);
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (OnFragmentInteractionListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onScore(int point) {
+        mListener.onFragmentInteraction(TAG, MainActivity.InteractionType.SCORE, point);
     }
 }

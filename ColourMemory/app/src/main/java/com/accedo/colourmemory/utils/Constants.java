@@ -8,4 +8,7 @@ public class Constants {
     public static final int CARD_COUNT = 8;
     public static final int COLUMN_COUNT = 4;
     public static final int ROW_COUNT = 4;
+
+    public static final int MATCH_SCORE = 2;
+    public static final int NO_MATCH_SCORE = -1;
 }
