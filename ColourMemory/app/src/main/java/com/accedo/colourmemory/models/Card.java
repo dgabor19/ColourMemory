@@ -10,10 +10,12 @@ public class Card {
 
     private Colour colour;
     private boolean isFaceUp;
+    private boolean isPaired;
 
-    public Card(Colour colour, boolean isFaceUp) {
+    public Card(Colour colour, boolean isFaceUp, boolean isPaired) {
         this.colour = colour;
         this.isFaceUp = isFaceUp;
+        this.isPaired = isPaired;
     }
 
     public Colour getColour() {
@@ -32,11 +34,20 @@ public class Card {
         isFaceUp = faceUp;
     }
 
+    public boolean isPaired() {
+        return isPaired;
+    }
+
+    public void setPaired(boolean paired) {
+        isPaired = paired;
+    }
+
     @Override
     public String toString() {
         return "Card{" +
                 "colour=" + colour +
                 ", isFaceUp=" + isFaceUp +
+                ", isPaired=" + isPaired +
                 '}';
     }
 
