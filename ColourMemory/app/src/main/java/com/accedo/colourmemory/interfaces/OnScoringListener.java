@@ -7,5 +7,5 @@ import android.view.View;
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
 public interface OnScoringListener {
-    void onScore(int point);
+    void onScore(int point, boolean isEnd);
 }

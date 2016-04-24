@@ -44,7 +44,7 @@ public class CardGridLayout extends GridLayout {
 
     }
 
-    public void init(int columnCount, int rowCount, OnScoringListener listener) {
+    public void init(final int columnCount, final int rowCount, OnScoringListener listener) {
 
         setColumnCount(columnCount);
         setRowCount(rowCount);
@@ -84,8 +84,6 @@ public class CardGridLayout extends GridLayout {
                         CardUtils.animateCardFlip(getContext(), getChildAt(index), card);
 
 
-                        Log.d(TAG, "CARD cardOnFaceSum " + cardOnFaceSum + " " + card);
-
                         // If there are already 2 cards with face up
                         if (cardOnFaceSum > 1) {
 
@@ -100,16 +98,24 @@ public class CardGridLayout extends GridLayout {
                                 }
                             }
 
-                            Log.d(TAG, "CARD currentCard " + index + " " + card + " otherCard " + otherCardFaceUpPosition + " " + otherCardFaceUp);
-
                             // Finding the cards match
                             if (otherCardFaceUp != null && card.getColour() == otherCardFaceUp.getColour()) {
-                                if (mListener != null) {
-                                    mListener.onScore(Constants.MATCH_SCORE);
-                                }
-
                                 card.setPaired(true);
                                 otherCardFaceUp.setPaired(true);
+
+                                if (mListener != null) {
+                                    int cardPairedSum = 0;
+                                    for (Card c : mCards) {
+                                        if (c.isPaired()) {
+                                            ++cardPairedSum;
+                                        }
+                                    }
+
+                                    Log.d(TAG, "CARD pairedSum " + cardPairedSum + " " + (columnCount * rowCount));
+
+                                    // Game over, all card faced up and paired
+                                    mListener.onScore(Constants.MATCH_SCORE, cardPairedSum == columnCount * rowCount);
+                                }
 
 
                             } else { // Flipping the cards back with face up
@@ -130,15 +136,13 @@ public class CardGridLayout extends GridLayout {
                                         for (int i : cardsToFaceDown) {
                                             Card card = mCards.get(i);
 
-                                            Log.d(TAG, "CARD cardsToFaceDown " + i + " " + cardsToFaceDown);
-
                                             CardUtils.animateCardFlip(getContext(), getChildAt(i), card);
 
                                             card.setFaceUp(false);
                                         }
 
                                         if (mListener != null) {
-                                            mListener.onScore(Constants.NO_MATCH_SCORE);
+                                            mListener.onScore(Constants.NO_MATCH_SCORE, false);
                                         }
                                     }
                                 }, 1000);
