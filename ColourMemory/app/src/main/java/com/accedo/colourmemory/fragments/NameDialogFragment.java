@@ -14,8 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.accedo.colourmemory.BaseActivity;
 import com.accedo.colourmemory.HighScoresActivity;
 import com.accedo.colourmemory.R;
+import com.accedo.colourmemory.db.ScoreDataSource;
+import com.accedo.colourmemory.models.Score;
 import com.accedo.colourmemory.utils.Constants;
 
 /**
@@ -88,16 +91,21 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
 
         switch (v.getId()) {
             case R.id.buttonPositiveDialog:
+                String name = mEditName.getText().toString();
+
                 // Check if the name field is empty
-                if (mEditName.getText().toString().length() < 1) {
+                if (name.length() < 1) {
                     mInputLayout.setError(getString(R.string.name_error));
                 } else {
 
                     dismiss();
 
+                    ScoreDataSource dataSource = ((BaseActivity) getActivity()).getDataSource();
+                    dataSource.createScore(new Score(0, name, mScore));
+
                     Intent intent = new Intent(getActivity(), HighScoresActivity.class);
                     intent.putExtra(Constants.PARAMS_SCORE, mScore);
-                    intent.putExtra(Constants.PARAMS_NAME, mEditName.getText().toString());
+                    intent.putExtra(Constants.PARAMS_NAME, name);
 
                     startActivity(intent);
                 }

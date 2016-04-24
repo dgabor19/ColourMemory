@@ -3,29 +3,23 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent">
 
+
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_horizontal|left"
         android:id="@+id/textRankRow"
+        android:layout_weight="1"
+        android:gravity="center_horizontal|left"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_horizontal|left"
         android:id="@+id/textNameRow"
+        android:layout_weight="1"
+        android:gravity="center_horizontal|left"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:id="@+id/textScoreRow"
         android:layout_weight="1"
         android:gravity="center_horizontal|left"
-        android:id="@+id/textScoreRow"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
-
 
 </TableRow>

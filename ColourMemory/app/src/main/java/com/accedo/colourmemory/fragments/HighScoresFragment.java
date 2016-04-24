@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.accedo.colourmemory.R;
+import com.accedo.colourmemory.models.Score;
 import com.accedo.colourmemory.views.ScoreTableLayout;
+
+import java.util.List;
 
 /**
  * Created by gabordudas on 24/04/16.
@@ -47,9 +50,12 @@ public class HighScoresFragment extends BaseFragment {
 
         mScoreLayout = (ScoreTableLayout) view.findViewById(R.id.scoreTable);
 
-        mScoreLayout.init(100);
+
 
     }
 
+    public void setHighScores(List<Score> scores) {
+        mScoreLayout.init(scores);
+    }
 
 }

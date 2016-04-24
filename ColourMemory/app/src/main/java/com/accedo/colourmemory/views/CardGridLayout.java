@@ -111,8 +111,6 @@ public class CardGridLayout extends GridLayout {
                                         }
                                     }
 
-                                    Log.d(TAG, "CARD pairedSum " + cardPairedSum + " " + (columnCount * rowCount));
-
                                     // Game over, all card faced up and paired
                                     mListener.onScore(Constants.MATCH_SCORE, cardPairedSum == columnCount * rowCount);
                                 }

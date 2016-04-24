@@ -7,4 +7,8 @@
     <string name="name_error">Name cannot be empty</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+
+    <string name="column_rank">Rank</string>
+    <string name="column_name">Name</string>
+    <string name="column_score">Score</string>
 </resources>

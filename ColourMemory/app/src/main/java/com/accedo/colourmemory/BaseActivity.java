@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.accedo.colourmemory.db.ScoreDataSource;
 import com.accedo.colourmemory.interfaces.OnFragmentInteractionListener;
 import com.accedo.colourmemory.utils.Converter;
 
@@ -24,6 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnFragme
     protected Handler mHandler = new Handler();
     protected FragmentManager mFragmentManager;
     protected Toolbar mToolbar;
+    protected ScoreDataSource mDataSource;
 
     public enum InteractionType {
         SCORE
@@ -33,7 +35,24 @@ public abstract class BaseActivity extends AppCompatActivity implements OnFragme
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mDataSource = new ScoreDataSource(this);
+        mDataSource.open();
+
         mFragmentManager = getSupportFragmentManager();
+    }
+
+    @Override
+    protected void onResume() {
+        mDataSource.open();
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        mDataSource.close();
+
+        super.onPause();
     }
 
     public void setToolbar(BaseActivity activity, String title, int logoResId, int score) {
@@ -67,5 +86,9 @@ public abstract class BaseActivity extends AppCompatActivity implements OnFragme
 
     public Toolbar getToolbar() {
         return mToolbar;
+    }
+
+    public ScoreDataSource getDataSource() {
+        return mDataSource;
     }
 }

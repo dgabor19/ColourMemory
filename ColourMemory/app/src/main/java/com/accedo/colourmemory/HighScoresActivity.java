@@ -6,7 +6,12 @@ import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.accedo.colourmemory.db.ScoreDataSource;
+import com.accedo.colourmemory.fragments.HighScoresFragment;
+import com.accedo.colourmemory.models.Score;
 import com.accedo.colourmemory.utils.Constants;
+
+import java.util.List;
 
 /**
  * Created by gabordudas on 24/04/16.
@@ -23,6 +28,8 @@ public class HighScoresActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_scores);
 
+        List<Score> scores = mDataSource.getAllScores();
+
         mScore = getIntent().getIntExtra(Constants.PARAMS_SCORE, 0);
         mName = getIntent().getStringExtra(Constants.PARAMS_NAME);
 
@@ -33,7 +40,8 @@ public class HighScoresActivity extends BaseActivity {
             setToolbar(this, getString(R.string.high_scores), 0, 0);
         }
 
-
+        HighScoresFragment highScoresFragment = (HighScoresFragment) mFragmentManager.findFragmentById(R.id.highScoresFragment);
+        highScoresFragment.setHighScores(scores);
     }
 
 
