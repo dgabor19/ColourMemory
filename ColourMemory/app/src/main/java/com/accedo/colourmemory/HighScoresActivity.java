@@ -2,14 +2,9 @@ package com.accedo.colourmemory;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
-
-import com.accedo.colourmemory.db.ScoreDataSource;
 import com.accedo.colourmemory.fragments.HighScoresFragment;
 import com.accedo.colourmemory.models.Score;
-import com.accedo.colourmemory.utils.Constants;
 
 import java.util.List;
 
@@ -20,9 +15,6 @@ import java.util.List;
 public class HighScoresActivity extends BaseActivity {
     public static final String TAG = HighScoresActivity.class.getSimpleName();
 
-    private int mScore = 0;
-    private String mName;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,15 +22,14 @@ public class HighScoresActivity extends BaseActivity {
 
         List<Score> scores = mDataSource.getAllScores();
 
-        mScore = getIntent().getIntExtra(Constants.PARAMS_SCORE, 0);
-        mName = getIntent().getStringExtra(Constants.PARAMS_NAME);
-
-        Toast.makeText(this, "score: " + mScore + " name: " + mName, Toast.LENGTH_LONG).show();
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
             setToolbar(this, getString(R.string.high_scores), 0, 0);
         }
+
+        getSupportActionBar().setHomeButtonEnabled(true); // disable the button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // remove the left caret
+        getSupportActionBar().setDisplayShowHomeEnabled(true); // remove the icon
 
         HighScoresFragment highScoresFragment = (HighScoresFragment) mFragmentManager.findFragmentById(R.id.highScoresFragment);
         highScoresFragment.setHighScores(scores);

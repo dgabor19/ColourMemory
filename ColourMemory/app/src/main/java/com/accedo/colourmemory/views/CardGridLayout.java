@@ -46,6 +46,8 @@ public class CardGridLayout extends GridLayout {
 
     public void init(final int columnCount, final int rowCount, OnScoringListener listener) {
 
+        removeAllViews();
+
         setColumnCount(columnCount);
         setRowCount(rowCount);
         mListener = listener;

@@ -3,6 +3,7 @@ package com.accedo.colourmemory.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -52,6 +53,17 @@ public class HighScoresFragment extends BaseFragment {
 
 
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mActivity.finish();
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void setHighScores(List<Score> scores) {

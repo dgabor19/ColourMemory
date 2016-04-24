@@ -71,7 +71,6 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
             case R.id.menu_action_high_scores:
 
                 Intent intent = new Intent(mActivity, HighScoresActivity.class);
-                intent.putExtra(Constants.PARAMS_SCORE, ((MainActivity)mActivity).getScore());
 
                 startActivity(intent);
 
@@ -79,6 +78,10 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void reset() {
+        mGrid.init(Constants.COLUMN_COUNT, Constants.ROW_COUNT, this);
     }
 
     @Override

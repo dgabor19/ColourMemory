@@ -1,6 +1,7 @@
 package com.accedo.colourmemory.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,14 +9,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.accedo.colourmemory.BaseActivity;
 import com.accedo.colourmemory.HighScoresActivity;
+import com.accedo.colourmemory.MainActivity;
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.db.ScoreDataSource;
 import com.accedo.colourmemory.models.Score;
@@ -78,6 +82,8 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
         mPositiveButton.setOnClickListener(this);
         mNegativeButton.setOnClickListener(this);
 
+        mEditName.requestFocus();
+
         return view;
     }
 
@@ -100,14 +106,26 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
 
                     dismiss();
 
+                    final MainActivity activity = (MainActivity) getActivity();
+
                     ScoreDataSource dataSource = ((BaseActivity) getActivity()).getDataSource();
                     dataSource.createScore(new Score(0, name, mScore));
 
-                    Intent intent = new Intent(getActivity(), HighScoresActivity.class);
-                    intent.putExtra(Constants.PARAMS_SCORE, mScore);
-                    intent.putExtra(Constants.PARAMS_NAME, name);
+                    startActivity(new Intent(getActivity(), HighScoresActivity.class));
 
-                    startActivity(intent);
+                    BaseFragment.getAlertDialog(activity, null,
+                            getString(R.string.new_game),
+                            false, R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    activity.reset();
+                                }
+                            }, R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    activity.finish();
+                                }
+                            }).show();
                 }
 
                 break;

@@ -33,11 +33,8 @@ public class ScoreTableLayout extends TableLayout {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
-        String rankValue = getContext().getString(R.string.column_rank);
-        String nameValue = getContext().getString(R.string.column_name);
-        String scoreValue = getContext().getString(R.string.column_score);
-
-        for (int i = 0; i < scores.size() + 1; i++) {
+        for (int i = 0; i < scores.size(); i++) {
+            Score score = scores.get(i);
 
             TableRow tableRow = (TableRow) inflater.inflate(R.layout.layout_score_row, this, false);
 
@@ -45,18 +42,10 @@ public class ScoreTableLayout extends TableLayout {
             TextView nameText = (TextView) tableRow.findViewById(R.id.textNameRow);
             TextView scoreText = (TextView) tableRow.findViewById(R.id.textScoreRow);
 
-            if (i > 0) {
-                Score score = scores.get(i - 1);
+            rankText.setText(String.valueOf(i + 1));
+            nameText.setText(score.getName());
+            scoreText.setText(String.valueOf(score.getScore()));
 
-                rankValue = String.valueOf(i);
-                nameValue = score.getName();
-                scoreValue = String.valueOf(score.getScore());
-
-            }
-
-            rankText.setText(rankValue);
-            nameText.setText(nameValue);
-            scoreText.setText(scoreValue);
 
             addView(tableRow);
         }

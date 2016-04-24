@@ -1,15 +1,11 @@
 package com.accedo.colourmemory;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import com.accedo.colourmemory.fragments.BaseFragment;
 import com.accedo.colourmemory.fragments.MainFragment;
 import com.accedo.colourmemory.fragments.NameDialogFragment;
-import com.accedo.colourmemory.utils.Constants;
 
 public class MainActivity extends BaseActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -56,6 +52,15 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
         }
+    }
+
+    public void reset() {
+        mScore = 0;
+        mRounds = 0;
+        ((TextView) mToolbar.findViewById(R.id.textScore))
+                .setText(String.format(getString(R.string.score), mScore));
+
+        ((MainFragment) mFragmentManager.findFragmentById(R.id.mainFragment)).reset();
     }
 
     public int getScore() {
