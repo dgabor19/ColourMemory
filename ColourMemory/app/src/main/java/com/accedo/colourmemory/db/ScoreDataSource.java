@@ -1,5 +1,10 @@
 package com.accedo.colourmemory.db;
 
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * DB data source handler class
  */
 public class ScoreDataSource {
 
@@ -39,6 +43,11 @@ public class ScoreDataSource {
         dbHelper.close();
     }
 
+    /**
+     * Add new row to the table
+     * @param score
+     * @return
+     */
     public Score createScore(Score score) {
         ContentValues values = new ContentValues();
         values.put(ScoreSQLiteHelper.COLUMN_USER, score.getName());
@@ -56,6 +65,10 @@ public class ScoreDataSource {
         return newScore;
     }
 
+    /**
+     * Delete row from the table
+     * @param score
+     */
     public void deleteScore(Score score) {
         long id = score.getId();
         System.out.println("Comment deleted with id: " + id);
@@ -63,6 +76,10 @@ public class ScoreDataSource {
                 + " = " + id, null);
     }
 
+    /**
+     * Gets all the records, descending ordered by score
+     * @return
+     */
     public List<Score> getAllScores() {
         List<Score> comments = new ArrayList<>();
 

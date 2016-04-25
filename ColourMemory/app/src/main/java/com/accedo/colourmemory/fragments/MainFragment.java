@@ -1,5 +1,10 @@
 package com.accedo.colourmemory.fragments;
 
+/**
+ * Created by gabordudas on 18/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.accedo.colourmemory.HighScoresActivity;
 import com.accedo.colourmemory.MainActivity;
@@ -19,8 +23,7 @@ import com.accedo.colourmemory.utils.Constants;
 import com.accedo.colourmemory.views.CardGridLayout;
 
 /**
- * Created by gabordudas on 18/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Fragment that stores and handles card grid table
  */
 public class MainFragment extends BaseFragment implements OnScoringListener {
     public static final String TAG = MainFragment.class.getSimpleName();
@@ -55,7 +58,6 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
 
         mGrid = (CardGridLayout) view.findViewById(R.id.gridMain);
         mGrid.init(Constants.COLUMN_COUNT, Constants.ROW_COUNT, this);
-
     }
 
     @Override
@@ -80,12 +82,15 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Resets the table
+     */
     public void reset() {
         mGrid.init(Constants.COLUMN_COUNT, Constants.ROW_COUNT, this);
     }
 
     @Override
-    public void onScore(int point, boolean isEnd) {
-        mListener.onFragmentInteraction(TAG, MainActivity.InteractionType.SCORE, point, isEnd);
+    public void onScore(int score, boolean isEnd) {
+        mListener.onFragmentInteraction(TAG, MainActivity.InteractionType.SCORE, score, isEnd);
     }
 }

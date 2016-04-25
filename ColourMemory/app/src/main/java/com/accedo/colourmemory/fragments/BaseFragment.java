@@ -1,5 +1,10 @@
 package com.accedo.colourmemory.fragments;
 
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -7,16 +12,14 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
 
 import com.accedo.colourmemory.BaseActivity;
 import com.accedo.colourmemory.interfaces.OnFragmentInteractionListener;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Extendable Fragment with commonly used objects and methods
  */
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
     public static final String TAG = BaseFragment.class.getSimpleName();
 
     protected BaseActivity mActivity;

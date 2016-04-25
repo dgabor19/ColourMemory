@@ -1,14 +1,17 @@
 package com.accedo.colourmemory.models;
 
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Model class to store Score related attributes for DB
  */
 public class Score implements Serializable, Parcelable {
     private long id;

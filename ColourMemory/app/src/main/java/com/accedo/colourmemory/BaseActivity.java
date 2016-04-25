@@ -1,5 +1,10 @@
 package com.accedo.colourmemory;
 
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -17,8 +22,7 @@ import com.accedo.colourmemory.interfaces.OnFragmentInteractionListener;
 import com.accedo.colourmemory.utils.Converter;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Base class for Activities to store the commonly used objects, methods
  */
 public abstract class BaseActivity extends AppCompatActivity implements OnFragmentInteractionListener {
     public static final String TAG = BaseActivity.class.getSimpleName();
@@ -63,6 +67,13 @@ public abstract class BaseActivity extends AppCompatActivity implements OnFragme
         super.onPause();
     }
 
+    /**
+     * Use this method to set the toolbar
+     * @param activity
+     * @param title
+     * @param logoResId
+     * @param score
+     */
     public void setToolbar(BaseActivity activity, String title, int logoResId, int score) {
         if (logoResId != 0) {
             mToolbar.setLogo(logoResId);

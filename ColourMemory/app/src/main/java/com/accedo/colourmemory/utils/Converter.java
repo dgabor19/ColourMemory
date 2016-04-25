@@ -1,5 +1,10 @@
 package com.accedo.colourmemory.utils;
 
+/**
+ * Util class to convert some stuffs
+ * Created by gabordudas on 20/08/14.
+ */
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
@@ -13,12 +18,8 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Util class to convert some stuffs
- * Created by gabordudas on 20/08/14.
- */
 public class Converter {
-    private static final String TAG = "Converter";
+    private static final String TAG = Converter.class.getSimpleName();
 
     /**
      * Converts pixel to dp

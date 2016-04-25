@@ -5,13 +5,9 @@ package com.accedo.colourmemory.utils;
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
 public class Constants {
-    public static final int CARD_COUNT = 8;
     public static final int COLUMN_COUNT = 4;
     public static final int ROW_COUNT = 4;
 
     public static final int MATCH_SCORE = 2;
     public static final int NO_MATCH_SCORE = -1;
-
-    public static final String PARAMS_SCORE = "params_score";
-    public static final String PARAMS_NAME = "params_name";
 }

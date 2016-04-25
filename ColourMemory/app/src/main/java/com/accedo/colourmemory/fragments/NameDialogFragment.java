@@ -1,19 +1,21 @@
 package com.accedo.colourmemory.fragments;
 
-import android.app.Dialog;
-import android.content.Context;
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -23,11 +25,9 @@ import com.accedo.colourmemory.MainActivity;
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.db.ScoreDataSource;
 import com.accedo.colourmemory.models.Score;
-import com.accedo.colourmemory.utils.Constants;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * DialogFragment for requesting and validating the user name
  */
 public class NameDialogFragment extends DialogFragment implements View.OnClickListener {
     public static final String TAG = NameDialogFragment.class.getSimpleName();
@@ -84,6 +84,8 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
 
         mEditName.requestFocus();
 
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
         return view;
     }
 
@@ -94,6 +96,7 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        final MainActivity activity = (MainActivity) getActivity();
 
         switch (v.getId()) {
             case R.id.buttonPositiveDialog:
@@ -106,13 +109,12 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
 
                     dismiss();
 
-                    final MainActivity activity = (MainActivity) getActivity();
-
                     ScoreDataSource dataSource = ((BaseActivity) getActivity()).getDataSource();
                     dataSource.createScore(new Score(0, name, mScore));
 
                     startActivity(new Intent(getActivity(), HighScoresActivity.class));
 
+                    // Showing a dialog to offer table reset
                     BaseFragment.getAlertDialog(activity, null,
                             getString(R.string.new_game),
                             false, R.string.ok, new DialogInterface.OnClickListener() {
@@ -133,9 +135,29 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
 
                 dismiss();
 
+                // Showing a dialog to offer table reset
+                BaseFragment.getAlertDialog(activity, null,
+                        getString(R.string.new_game),
+                        false, R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                activity.reset();
+                            }
+                        }, R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                activity.finish();
+                            }
+                        }).show();
+
                 break;
         }
+    }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 }

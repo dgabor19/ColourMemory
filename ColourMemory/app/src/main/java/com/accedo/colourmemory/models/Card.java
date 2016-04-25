@@ -1,10 +1,14 @@
 package com.accedo.colourmemory.models;
 
-import com.accedo.colourmemory.R;
-
 /**
  * Created by gabordudas on 18/04/16.
  * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
+import com.accedo.colourmemory.R;
+
+/**
+ * Model class to store Card related attributes
  */
 public class Card {
 

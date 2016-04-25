@@ -13,7 +13,7 @@ import com.accedo.colourmemory.models.Card;
 public class CardUtils {
     public static final String TAG = CardUtils.class.getSimpleName();
 
-    public static void animateCardFlip(Context context, View cardItem, Card card) {
+    public static void animateCardFlip(Context context, View cardItem) {
 
         View backView = cardItem.findViewById(R.id.imageBackCard);
         View faceView = cardItem.findViewById(R.id.imageFaceCard);

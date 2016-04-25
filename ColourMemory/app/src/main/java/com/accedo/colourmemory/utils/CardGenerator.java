@@ -1,15 +1,18 @@
 package com.accedo.colourmemory.utils;
 
+/**
+ * Created by gabordudas on 18/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import com.accedo.colourmemory.models.Card;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by gabordudas on 18/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Helper class to generate the table
  */
 public class CardGenerator {
     public static final String TAG = CardGenerator.class.getSimpleName();

@@ -1,8 +1,11 @@
 package com.accedo.colourmemory.views;
 
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.content.Context;
-import android.graphics.Color;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TableLayout;
@@ -15,8 +18,7 @@ import com.accedo.colourmemory.models.Score;
 import java.util.List;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Extended TableLayout for displaying high scores
  */
 public class ScoreTableLayout extends TableLayout {
     public static final String TAG = ScoreTableLayout.class.getSimpleName();
@@ -29,6 +31,10 @@ public class ScoreTableLayout extends TableLayout {
         super(context, attrs);
     }
 
+    /**
+     * Initialize the layout after creation
+     * @param scores
+     */
     public void init(List<Score> scores) {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());

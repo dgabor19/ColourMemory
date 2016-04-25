@@ -1,5 +1,10 @@
 package com.accedo.colourmemory.fragments;
 
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,8 +19,7 @@ import com.accedo.colourmemory.views.ScoreTableLayout;
 import java.util.List;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Fragment that stores and handles high scores
  */
 public class HighScoresFragment extends BaseFragment {
     public static final String TAG = HighScoresFragment.class.getSimpleName();
@@ -50,10 +54,6 @@ public class HighScoresFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mScoreLayout = (ScoreTableLayout) view.findViewById(R.id.scoreTable);
-
-
-
-
     }
 
     @Override
@@ -66,6 +66,10 @@ public class HighScoresFragment extends BaseFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sets high scores
+     * @param scores
+     */
     public void setHighScores(List<Score> scores) {
         mScoreLayout.init(scores);
     }

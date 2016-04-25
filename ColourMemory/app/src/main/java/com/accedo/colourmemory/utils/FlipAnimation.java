@@ -1,5 +1,10 @@
 package com.accedo.colourmemory.utils;
 
+/**
+ * Created by gabordudas on 21/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.content.Context;
 import android.graphics.Camera;
 import android.graphics.Matrix;
@@ -10,10 +15,6 @@ import android.view.animation.Transformation;
 
 import com.accedo.colourmemory.R;
 
-/**
- * Created by gabordudas on 21/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
- */
 public class FlipAnimation extends Animation {
     private Camera camera;
 

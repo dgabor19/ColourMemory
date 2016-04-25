@@ -1,13 +1,17 @@
 package com.accedo.colourmemory.db;
 
+/**
+ * Created by gabordudas on 24/04/16.
+ * Copyright (c) 2015 ColourMemory. All rights reserved.
+ */
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by gabordudas on 24/04/16.
- * Copyright (c) 2015 ColourMemory. All rights reserved.
+ * Customized SQLite helper to create db and table
  */
 public class ScoreSQLiteHelper extends SQLiteOpenHelper {
     public static final String TAG = ScoreSQLiteHelper.class.getSimpleName();
