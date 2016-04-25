@@ -2,11 +2,14 @@ package com.accedo.colourmemory.views;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayout;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.accedo.colourmemory.BaseActivity;
@@ -24,7 +27,7 @@ import java.util.List;
  * Created by gabordudas on 21/04/16.
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
-public class CardGridLayout extends GridLayout {
+public class CardGridLayout extends LinearLayoutCompat {
     public static final String TAG = CardGridLayout.class.getSimpleName();
 
     private List<Card> mCards;
@@ -49,115 +52,131 @@ public class CardGridLayout extends GridLayout {
 
         removeAllViews();
 
-        setColumnCount(columnCount);
-        setRowCount(rowCount);
+        setOrientation(VERTICAL);
         mListener = listener;
 
         mCards = CardGenerator.newInstance().getShuffledCards();
 
-        for (int i = 0; i < mCards.size(); i++) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_card, this, false);
+        // Rows
+        for (int i = 0; i < rowCount; i++) {
 
-            ((ImageView) view.findViewById(R.id.imageFaceCard)).setImageResource(mCards.get(i).getColour().resId);
+            LinearLayoutCompat rowLayout = new LinearLayoutCompat(getContext());
+            rowLayout.setOrientation(HORIZONTAL);
 
+            // Columns
+            for (int j = 0; j < columnCount; j++) {
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_card, this, false);
 
-            final View card = view.findViewById(R.id.card);
-            card.setTag(i);
-            card.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                ((ImageView) view.findViewById(R.id.imageFaceCard)).setImageResource(mCards.get(i * columnCount + j).getColour().resId);
 
-                    final int index = (int) v.getTag();
-                    int cardOnFaceSum = 0;
+                Log.d(TAG, "CARD row " + i + " column " + j + " pos " + (i * columnCount + j));
 
-                    Card card = mCards.get(index);
+                view.setTag(R.string.tag_row, i);
+                view.setTag(R.string.tag_column, j);
 
-                    // Skip card which is already paired
-                    if (!card.isPaired()) {
+                view.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                        card.setFaceUp(true);
+                        final int row = (int) v.getTag(R.string.tag_row);
+                        final int column = (int) v.getTag(R.string.tag_column);
 
-                        // Counting the cards with face up
-                        for (Card c : mCards) {
-                            if (c.isFaceUp() && !c.isPaired()) {
-                                ++cardOnFaceSum;
-                            }
-                        }
+                        final int index = row * columnCount + column;
+                        int cardOnFaceSum = 0;
 
-                        CardUtils.animateCardFlip(getContext(), getChildAt(index), card);
+                        Card card = mCards.get(index);
 
+                        Log.d(TAG, "CARD clicked on " + index);
 
-                        // If there are already 2 cards with face up
-                        if (cardOnFaceSum > 1) {
+                        // Skip card which is already paired
+                        if (!card.isPaired()) {
 
-                            // Find the card was faced up beside the current one
-                            Card otherCardFaceUp = null;
-                            int otherCardFaceUpPosition = -1;
-                            for (int i = 0; i < mCards.size(); i++) {
-                                Card tempCard = mCards.get(i);
-                                if (tempCard.isFaceUp() && i != index && !tempCard.isPaired()) {
-                                    otherCardFaceUp = tempCard;
-                                    otherCardFaceUpPosition = i;
+                            card.setFaceUp(true);
+
+                            // Counting the cards with face up
+                            for (Card c : mCards) {
+                                if (c.isFaceUp() && !c.isPaired()) {
+                                    ++cardOnFaceSum;
                                 }
                             }
 
-                            // Finding the cards match
-                            if (otherCardFaceUp != null && card.getColour() == otherCardFaceUp.getColour()) {
-                                card.setPaired(true);
-                                otherCardFaceUp.setPaired(true);
-
-                                if (mListener != null) {
-                                    int cardPairedSum = 0;
-                                    for (Card c : mCards) {
-                                        if (c.isPaired()) {
-                                            ++cardPairedSum;
-                                        }
-                                    }
-
-                                    // Game over, all card faced up and paired
-                                    mListener.onScore(Constants.MATCH_SCORE, cardPairedSum == columnCount * rowCount);
-                                }
+                            CardUtils.animateCardFlip(getContext(), v, card);
 
 
-                            } else { // Flipping the cards back with face up
-                                final List<Integer> cardsToFaceDown = new ArrayList<>();
+                            // If there are already 2 cards with face up
+                            if (cardOnFaceSum > 1) {
+
+                                // Find the card was faced up beside the current one
+                                Card otherCardFaceUp = null;
+                                int otherCardFaceUpPosition = -1;
                                 for (int i = 0; i < mCards.size(); i++) {
-                                    Card c = mCards.get(i);
-
-                                    if (c.isFaceUp() && !c.isPaired()) {
-                                        cardsToFaceDown.add(i);
-                                        c.setFaceUp(false);
+                                    Card tempCard = mCards.get(i);
+                                    if (tempCard.isFaceUp() && i != index && !tempCard.isPaired()) {
+                                        otherCardFaceUp = tempCard;
+                                        otherCardFaceUpPosition = i;
                                     }
                                 }
 
-                                // Adding some delay for the user to see and memorize the cards
-                                getHandler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        for (int i : cardsToFaceDown) {
-                                            Card card = mCards.get(i);
+                                // Finding the cards match
+                                if (otherCardFaceUp != null && card.getColour() == otherCardFaceUp.getColour()) {
+                                    card.setPaired(true);
+                                    otherCardFaceUp.setPaired(true);
 
-                                            CardUtils.animateCardFlip(getContext(), getChildAt(i), card);
-
-                                            card.setFaceUp(false);
+                                    if (mListener != null) {
+                                        int cardPairedSum = 0;
+                                        for (Card c : mCards) {
+                                            if (c.isPaired()) {
+                                                ++cardPairedSum;
+                                            }
                                         }
 
-                                        if (mListener != null) {
-                                            mListener.onScore(Constants.NO_MATCH_SCORE, false);
+                                        // Game over, all card faced up and paired
+                                        mListener.onScore(Constants.MATCH_SCORE, cardPairedSum == columnCount * rowCount);
+                                    }
+
+
+                                } else { // Flipping the cards back with face up
+                                    final List<Integer> cardsToFaceDown = new ArrayList<>();
+                                    for (int i = 0; i < mCards.size(); i++) {
+                                        Card c = mCards.get(i);
+
+                                        if (c.isFaceUp() && !c.isPaired()) {
+                                            cardsToFaceDown.add(i);
+                                            c.setFaceUp(false);
                                         }
                                     }
-                                }, 1000);
+
+                                    // Adding some delay for the user to see and memorize the cards
+                                    getHandler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            for (int i : cardsToFaceDown) {
+                                                Card card = mCards.get(i);
+
+                                                int row = i / columnCount;
+                                                int column = i % rowCount;
+
+                                                CardUtils.animateCardFlip(getContext(), ((ViewGroup)getChildAt(row)).getChildAt(column), card);
+
+                                                card.setFaceUp(false);
+                                            }
+
+                                            if (mListener != null) {
+                                                mListener.onScore(Constants.NO_MATCH_SCORE, false);
+                                            }
+                                        }
+                                    }, 1000);
+                                }
                             }
                         }
                     }
-                }
 
-            });
+                });
 
-//            LayoutParams params = (LayoutParams) view.getLayoutParams();
-//            params.width = BaseActivity.sWidth / columnCount;
+                rowLayout.addView(view);
+            }
 
-            addView(view);
+            addView(rowLayout, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 }

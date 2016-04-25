@@ -12,4 +12,7 @@
     <string name="column_rank">Rank</string>
     <string name="column_name">Name</string>
     <string name="column_score">Score</string>
+
+    <string name="tag_row">row</string>
+    <string name="tag_column">column</string>
 </resources>
