@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -33,6 +34,7 @@ public class CardGridLayout extends LinearLayoutCompat {
 
     private List<Card> mCards;
     private OnScoringListener mListener;
+    private boolean mCardFlippingEnabler = true;
 
     public CardGridLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -96,7 +98,7 @@ public class CardGridLayout extends LinearLayoutCompat {
                         Card card = mCards.get(index);
 
                         // Skip card which is already paired
-                        if (!card.isPaired()) {
+                        if (!card.isPaired() && mCardFlippingEnabler) {
 
                             card.setFaceUp(!card.isFaceUp());
 
@@ -108,12 +110,14 @@ public class CardGridLayout extends LinearLayoutCompat {
                             }
 
                             // Animate the card to face up
-                            CardUtils.animateCardFlip(getContext(), v);
+                            CardUtils.animateCardFlip(getContext(), v, null);
 
                             if (card.isFaceUp()) {
 
                                 // If there are already 2 cards with face up
                                 if (cardOnFaceSum > 1) {
+
+                                    mCardFlippingEnabler = false;
 
                                     // Find the card was faced up beside the current one
                                     Card otherCardFaceUp = null;
@@ -140,10 +144,15 @@ public class CardGridLayout extends LinearLayoutCompat {
                                             // Notifying the fragment about match or
                                             // game over, all card faced up and paired
                                             mListener.onScore(Constants.MATCH_SCORE, cardPairedSum == columnCount * rowCount);
+
+                                            if (!mCardFlippingEnabler) {
+                                                mCardFlippingEnabler = true;
+                                            }
                                         }
 
 
                                     } else { // Flipping the cards back with face up
+
                                         final List<View> cardsToFaceDown = new ArrayList<>();
                                         for (int i = 0; i < mCards.size(); i++) {
                                             Card c = mCards.get(i);
@@ -164,7 +173,23 @@ public class CardGridLayout extends LinearLayoutCompat {
                                                 // Flipping all of the flipped cards to face down
                                                 for (View v : cardsToFaceDown) {
 
-                                                    CardUtils.animateCardFlip(getContext(), v);
+                                                    CardUtils.animateCardFlip(getContext(), v, new Animation.AnimationListener() {
+                                                        @Override
+                                                        public void onAnimationStart(Animation animation) {
+                                                            if (!mCardFlippingEnabler) {
+                                                                mCardFlippingEnabler = true;
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onAnimationEnd(Animation animation) {
+                                                        }
+
+                                                        @Override
+                                                        public void onAnimationRepeat(Animation animation) {
+
+                                                        }
+                                                    });
                                                 }
 
                                                 // Notifying the fragment that there is no match

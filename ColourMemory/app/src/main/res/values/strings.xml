@@ -8,6 +8,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="new_game">Do you want a new game?</string>
+    <string name="reset_game">New game</string>
 
     <string name="column_rank">Rank</string>
     <string name="column_name">Name</string>

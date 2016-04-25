@@ -77,6 +77,11 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
                 startActivity(intent);
 
                 break;
+            case R.id.menu_action_reset:
+
+                ((MainActivity)mActivity).reset();
+
+                break;
         }
 
         return super.onOptionsItemSelected(item);

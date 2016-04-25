@@ -8,4 +8,8 @@
           android:orderInCategory="100"
           app:showAsAction="always"/>
 
+    <item android:id="@+id/menu_action_reset"
+          android:title="@string/reset_game"
+          app:showAsAction="never"/>
+
 </menu>
