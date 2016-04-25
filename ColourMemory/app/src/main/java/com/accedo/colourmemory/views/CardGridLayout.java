@@ -6,6 +6,8 @@ package com.accedo.colourmemory.views;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -66,19 +68,19 @@ public class CardGridLayout extends LinearLayoutCompat {
 
         mCards = CardGenerator.newInstance().getShuffledCards();
 
+        final Bitmap cardFaceBitmap = BitmapFactory.decodeResource(getContext().getResources(), mCards.get(0).getColour().resId);
+
         // Rows
         for (int i = 0; i < rowCount; i++) {
 
-            LinearLayoutCompat rowLayout = new LinearLayoutCompat(getContext());
+            final LinearLayoutCompat rowLayout = new LinearLayoutCompat(getContext());
             rowLayout.setOrientation(HORIZONTAL);
 
             // Columns
             for (int j = 0; j < columnCount; j++) {
-                View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_card, this, false);
+                final View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_card, this, false);
 
                 ((ImageView) view.findViewById(R.id.imageFaceCard)).setImageResource(mCards.get(i * columnCount + j).getColour().resId);
-
-                Log.d(TAG, "CARD row " + i + " column " + j + " pos " + (i * columnCount + j));
 
                 final View card = view.findViewById(R.id.card);
 
@@ -176,13 +178,13 @@ public class CardGridLayout extends LinearLayoutCompat {
                                                     CardUtils.animateCardFlip(getContext(), v, new Animation.AnimationListener() {
                                                         @Override
                                                         public void onAnimationStart(Animation animation) {
-                                                            if (!mCardFlippingEnabler) {
-                                                                mCardFlippingEnabler = true;
-                                                            }
                                                         }
 
                                                         @Override
                                                         public void onAnimationEnd(Animation animation) {
+                                                            if (!mCardFlippingEnabler) {
+                                                                mCardFlippingEnabler = true;
+                                                            }
                                                         }
 
                                                         @Override
@@ -204,6 +206,19 @@ public class CardGridLayout extends LinearLayoutCompat {
                         }
                     }
 
+                });
+
+                // Resizing card view height according to images aspect-ratio
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        LinearLayoutCompat.LayoutParams params = (LinearLayoutCompat.LayoutParams) view.getLayoutParams();
+                        params.height = (int)((float)view.getWidth() * (float)cardFaceBitmap.getHeight() / (float)cardFaceBitmap.getWidth());
+
+
+                        view.setLayoutParams(params);
+                    }
                 });
 
                 rowLayout.addView(view);
