@@ -37,11 +37,6 @@ public class HighScoresActivity extends BaseActivity {
 
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
     public void onFragmentInteraction(String fragment, InteractionType type, Object... params) {
 
     }

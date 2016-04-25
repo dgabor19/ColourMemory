@@ -18,7 +18,7 @@
         </activity>
 
         <activity android:name=".HighScoresActivity"
-                  android:configChanges="orientation">
+                  android:configChanges="orientation|screenSize">
         </activity>
     </application>
 
