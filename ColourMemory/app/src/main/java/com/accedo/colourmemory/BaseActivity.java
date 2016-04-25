@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +23,8 @@ import com.accedo.colourmemory.utils.Converter;
 public abstract class BaseActivity extends AppCompatActivity implements OnFragmentInteractionListener {
     public static final String TAG = BaseActivity.class.getSimpleName();
 
+    public static int sHeight;
+    public static int sWidth;
     protected Handler mHandler = new Handler();
     protected FragmentManager mFragmentManager;
     protected Toolbar mToolbar;
@@ -34,6 +37,11 @@ public abstract class BaseActivity extends AppCompatActivity implements OnFragme
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        sHeight = displaymetrics.heightPixels;
+        sWidth = displaymetrics.widthPixels;
 
         mDataSource = new ScoreDataSource(this);
         mDataSource.open();

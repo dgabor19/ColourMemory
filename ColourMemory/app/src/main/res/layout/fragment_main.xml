@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:grid="http://schemas.android.com/apk/res-auto"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-    <com.accedo.colourmemory.views.CardGridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gridMain"
-        grid:alignmentMode="alignBounds"
-        grid:rowOrderPreserved="false"
-        grid:useDefaultMargins="true"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.accedo.colourmemory.views.CardGridLayout
+            android:id="@+id/gridMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
 
 </FrameLayout>

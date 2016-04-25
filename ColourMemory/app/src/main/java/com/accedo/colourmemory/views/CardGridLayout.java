@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.accedo.colourmemory.BaseActivity;
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.interfaces.OnScoringListener;
 import com.accedo.colourmemory.models.Card;
@@ -152,6 +153,9 @@ public class CardGridLayout extends GridLayout {
                 }
 
             });
+
+//            LayoutParams params = (LayoutParams) view.getLayoutParams();
+//            params.width = BaseActivity.sWidth / columnCount;
 
             addView(view);
         }
