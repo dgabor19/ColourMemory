@@ -2,7 +2,9 @@ package com.accedo.colourmemory.utils;
 
 import android.content.Context;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.models.Card;
@@ -32,5 +34,14 @@ public class CardUtils {
 
         cardView.startAnimation(flipAnimation);
 
+    }
+
+    public static void animateView(View view) {
+        final Animation animation = new AlphaAnimation(1f, 0f);
+        animation.setDuration(1000); // Animate for 1 seconds
+        animation.setInterpolator(new LinearInterpolator());
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatMode(Animation.REVERSE);
+        view.startAnimation(animation);
     }
 }

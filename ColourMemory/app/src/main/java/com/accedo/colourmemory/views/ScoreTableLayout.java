@@ -7,6 +7,7 @@ package com.accedo.colourmemory.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.models.Score;
+import com.accedo.colourmemory.utils.CardUtils;
 
 import java.util.List;
 
@@ -33,9 +35,10 @@ public class ScoreTableLayout extends TableLayout {
 
     /**
      * Initialize the layout after creation
+     * @param currentId
      * @param scores
      */
-    public void init(List<Score> scores) {
+    public void init(long currentId, List<Score> scores) {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
@@ -52,6 +55,11 @@ public class ScoreTableLayout extends TableLayout {
             nameText.setText(score.getName());
             scoreText.setText(String.valueOf(score.getScore()));
 
+            // Highlighting the last played rank
+            if (currentId == score.getId()) {
+                CardUtils.animateView(tableRow);
+                rankText.append("*");
+            }
 
             addView(tableRow);
         }

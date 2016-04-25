@@ -25,6 +25,7 @@ import com.accedo.colourmemory.MainActivity;
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.db.ScoreDataSource;
 import com.accedo.colourmemory.models.Score;
+import com.accedo.colourmemory.utils.Constants;
 
 /**
  * DialogFragment for requesting and validating the user name
@@ -110,9 +111,11 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
                     dismiss();
 
                     ScoreDataSource dataSource = ((BaseActivity) getActivity()).getDataSource();
-                    dataSource.createScore(new Score(0, name, mScore));
+                    long id = dataSource.createScore(new Score(0, name, mScore));
 
-                    startActivity(new Intent(getActivity(), HighScoresActivity.class));
+                    Intent intent = new Intent(getActivity(), HighScoresActivity.class);
+                    intent.putExtra(Constants.PARAM_ID, id);
+                    startActivity(intent);
 
                     // Showing a dialog to offer table reset
                     BaseFragment.getAlertDialog(activity, null,

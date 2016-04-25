@@ -19,6 +19,7 @@ public class Score implements Serializable, Parcelable {
     private int score;
 
     public Score(long id, String name, int score) {
+        this.id = id;
         this.name = name;
         this.score = score;
     }

@@ -70,8 +70,8 @@ public class HighScoresFragment extends BaseFragment {
      * Sets high scores
      * @param scores
      */
-    public void setHighScores(List<Score> scores) {
-        mScoreLayout.init(scores);
+    public void setHighScores(long currentId, List<Score> scores) {
+        mScoreLayout.init(currentId, scores);
     }
 
 }

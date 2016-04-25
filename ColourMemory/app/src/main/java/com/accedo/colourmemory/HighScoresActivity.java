@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import com.accedo.colourmemory.fragments.HighScoresFragment;
 import com.accedo.colourmemory.models.Score;
+import com.accedo.colourmemory.utils.Constants;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class HighScoresActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_scores);
 
+        long currentId = getIntent().getLongExtra(Constants.PARAM_ID, 0l);
+
+
         List<Score> scores = mDataSource.getAllScores();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -27,12 +31,14 @@ public class HighScoresActivity extends BaseActivity {
             setToolbar(this, getString(R.string.high_scores), 0, 0);
         }
 
-        getSupportActionBar().setHomeButtonEnabled(true); // disable the button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // remove the left caret
-        getSupportActionBar().setDisplayShowHomeEnabled(true); // remove the icon
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true); // disable the button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // remove the left caret
+            getSupportActionBar().setDisplayShowHomeEnabled(true); // remove the icon
+        }
 
         HighScoresFragment highScoresFragment = (HighScoresFragment) mFragmentManager.findFragmentById(R.id.highScoresFragment);
-        highScoresFragment.setHighScores(scores);
+        highScoresFragment.setHighScores(currentId, scores);
     }
 
 

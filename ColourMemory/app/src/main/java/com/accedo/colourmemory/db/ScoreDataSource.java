@@ -48,7 +48,7 @@ public class ScoreDataSource {
      * @param score
      * @return
      */
-    public Score createScore(Score score) {
+    public long createScore(Score score) {
         ContentValues values = new ContentValues();
         values.put(ScoreSQLiteHelper.COLUMN_USER, score.getName());
         values.put(ScoreSQLiteHelper.COLUMN_SCORE, score.getScore());
@@ -62,7 +62,7 @@ public class ScoreDataSource {
         cursor.moveToFirst();
         Score newScore = cursorToScore(cursor);
         cursor.close();
-        return newScore;
+        return insertId;
     }
 
     /**
