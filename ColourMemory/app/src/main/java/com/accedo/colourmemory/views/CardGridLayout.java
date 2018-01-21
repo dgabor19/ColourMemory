@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +37,9 @@ public class CardGridLayout extends LinearLayoutCompat {
     private OnScoringListener mListener;
     private boolean mCardFlippingEnabler = true;
 
+    private int mColumnCount;
+    private int mRowCount;
+
     public CardGridLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
@@ -60,6 +62,8 @@ public class CardGridLayout extends LinearLayoutCompat {
      * @param listener
      */
     public void init(final int columnCount, final int rowCount, OnScoringListener listener) {
+        mColumnCount = columnCount;
+        mRowCount = rowCount;
 
         removeAllViews();
 
@@ -87,126 +91,7 @@ public class CardGridLayout extends LinearLayoutCompat {
                 card.setTag(R.string.tag_row, i);
                 card.setTag(R.string.tag_column, j);
 
-                card.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        final int row = (int) v.getTag(R.string.tag_row);
-                        final int column = (int) v.getTag(R.string.tag_column);
-
-                        final int index = row * columnCount + column;
-                        int cardOnFaceSum = 0;
-
-                        Card card = mCards.get(index);
-
-                        // Skip card which is already paired
-                        if (!card.isPaired() && mCardFlippingEnabler) {
-
-                            card.setFaceUp(!card.isFaceUp());
-
-                            // Counting the cards with face up
-                            for (Card c : mCards) {
-                                if (c.isFaceUp() && !c.isPaired()) {
-                                    ++cardOnFaceSum;
-                                }
-                            }
-
-                            // Animate the card to face up
-                            CardUtils.animateCardFlip(getContext(), v, null);
-
-                            if (card.isFaceUp()) {
-
-                                // If there are already 2 cards with face up
-                                if (cardOnFaceSum > 1) {
-
-                                    mCardFlippingEnabler = false;
-
-                                    // Find the card was faced up beside the current one
-                                    Card otherCardFaceUp = null;
-                                    for (int i = 0; i < mCards.size(); i++) {
-                                        Card tempCard = mCards.get(i);
-                                        if (tempCard.isFaceUp() && i != index && !tempCard.isPaired()) {
-                                            otherCardFaceUp = tempCard;
-                                        }
-                                    }
-
-                                    // Finding the cards match
-                                    if (otherCardFaceUp != null && card.getColour() == otherCardFaceUp.getColour()) {
-                                        card.setPaired(true);
-                                        otherCardFaceUp.setPaired(true);
-
-                                        if (mListener != null) {
-                                            int cardPairedSum = 0;
-                                            for (Card c : mCards) {
-                                                if (c.isPaired()) {
-                                                    ++cardPairedSum;
-                                                }
-                                            }
-
-                                            // Notifying the fragment about match or
-                                            // game over, all card faced up and paired
-                                            mListener.onScore(Constants.MATCH_SCORE, cardPairedSum == columnCount * rowCount);
-
-                                            if (!mCardFlippingEnabler) {
-                                                mCardFlippingEnabler = true;
-                                            }
-                                        }
-
-
-                                    } else { // Flipping the cards back with face up
-
-                                        final List<View> cardsToFaceDown = new ArrayList<>();
-                                        for (int i = 0; i < mCards.size(); i++) {
-                                            Card c = mCards.get(i);
-
-                                            if (c.isFaceUp() && !c.isPaired()) {
-                                                int flipBackRow = i / columnCount;
-                                                int flipBackColumn = i % rowCount;
-
-                                                cardsToFaceDown.add(((ViewGroup) getChildAt(flipBackRow)).getChildAt(flipBackColumn));
-                                                c.setFaceUp(false);
-                                            }
-                                        }
-
-                                        // Adding some delay for the user to see and memorize the cards
-                                        getHandler().postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                // Flipping all of the flipped cards to face down
-                                                for (View v : cardsToFaceDown) {
-
-                                                    CardUtils.animateCardFlip(getContext(), v, new Animation.AnimationListener() {
-                                                        @Override
-                                                        public void onAnimationStart(Animation animation) {
-                                                        }
-
-                                                        @Override
-                                                        public void onAnimationEnd(Animation animation) {
-                                                            if (!mCardFlippingEnabler) {
-                                                                mCardFlippingEnabler = true;
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onAnimationRepeat(Animation animation) {
-
-                                                        }
-                                                    });
-                                                }
-
-                                                // Notifying the fragment that there is no match
-                                                if (mListener != null) {
-                                                    mListener.onScore(Constants.NO_MATCH_SCORE, false);
-                                                }
-                                            }
-                                        }, 1000);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                });
+                card.setOnClickListener(onClickListener);
 
                 // Resizing card view height according to images aspect-ratio
                 view.post(new Runnable() {
@@ -227,4 +112,151 @@ public class CardGridLayout extends LinearLayoutCompat {
             addView(rowLayout, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
+
+    private OnClickListener onClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            final int row = (int) v.getTag(R.string.tag_row);
+            final int column = (int) v.getTag(R.string.tag_column);
+
+            final int index = row * mColumnCount + column;
+            int cardOnFaceSum = 0;
+
+            Card card = mCards.get(index);
+
+            // Skip card which is already paired
+            if (!card.isPaired() && mCardFlippingEnabler) {
+
+                card.setFaceUp(!card.isFaceUp());
+
+                cardOnFaceSum = getCardsCountWithFaceUp(mCards);
+
+                // Animate the card to face up
+                CardUtils.animateCardFlip(getContext(), v, null);
+
+                if (card.isFaceUp()) {
+
+                    // If there are already 2 cards with face up
+                    if (cardOnFaceSum > 1) {
+
+                        mCardFlippingEnabler = false;
+
+                        // Finding the card was faced up beside the current one
+                        Card otherCardFaceUp = null;
+                        for (int i = 0; i < mCards.size(); i++) {
+                            Card tempCard = mCards.get(i);
+                            if (tempCard.isFaceUp() && i != index && !tempCard.isPaired()) {
+                                otherCardFaceUp = tempCard;
+                            }
+                        }
+
+                        // Finding the cards match
+                        if (otherCardFaceUp != null && card.getColour() == otherCardFaceUp.getColour()) {
+                            card.setPaired(true);
+                            otherCardFaceUp.setPaired(true);
+
+                            if (mListener != null) {
+                                int cardPairedSum = getPairedCardsCount(mCards);
+
+                                // Notifying the fragment about match or
+                                // game over, all card faced up and paired
+                                mListener.onScore(Constants.MATCH_SCORE, cardPairedSum == mColumnCount * mRowCount);
+
+                                if (!mCardFlippingEnabler) {
+                                    mCardFlippingEnabler = true;
+                                }
+                            }
+
+
+                        } else { // Flipping the cards back with face up
+
+                            final List<View> cardsToFaceDown = new ArrayList<>();
+                            for (int i = 0; i < mCards.size(); i++) {
+                                Card c = mCards.get(i);
+
+                                if (c.isFaceUp() && !c.isPaired()) {
+                                    int flipBackRow = i / mColumnCount;
+                                    int flipBackColumn = i % mRowCount;
+
+                                    cardsToFaceDown.add(((ViewGroup) getChildAt(flipBackRow)).getChildAt(flipBackColumn));
+                                    c.setFaceUp(false);
+                                }
+                            }
+
+                            // Adding some delay for the user to see and memorize the cards
+                            getHandler().postDelayed(new DelayTask(cardsToFaceDown), 1000);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    /**
+     * Counting the cards with face up
+     *
+     * @param cards
+     * @return
+     */
+    private static int getCardsCountWithFaceUp(final List<Card> cards) {
+        int cardOnFaceSum = 0;
+        for (Card c : cards) {
+            if (c.isFaceUp() && !c.isPaired()) {
+                ++cardOnFaceSum;
+            }
+        }
+
+        return cardOnFaceSum;
+    }
+
+    private static int getPairedCardsCount(final List<Card> cards) {
+        int cardPairedSum = 0;
+        for (Card c : cards) {
+            if (c.isPaired()) {
+                ++cardPairedSum;
+            }
+        }
+
+        return cardPairedSum;
+    }
+
+    private class DelayTask implements Runnable {
+
+        final List<View> mCardsToFaceDown;
+
+        public DelayTask(List<View> cardsToFaceDown) {
+            mCardsToFaceDown = cardsToFaceDown;
+        }
+
+        @Override
+        public void run() {
+            // Flipping all of the flipped cards to face down
+            for (View v : mCardsToFaceDown) {
+
+                CardUtils.animateCardFlip(getContext(), v, new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (!mCardFlippingEnabler) {
+                            mCardFlippingEnabler = true;
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+
+            // Notifying the fragment that there is no match
+            if (mListener != null) {
+                mListener.onScore(Constants.NO_MATCH_SCORE, false);
+            }
+        }
+    };
 }

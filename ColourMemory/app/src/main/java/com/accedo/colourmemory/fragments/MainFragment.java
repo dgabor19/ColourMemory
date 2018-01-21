@@ -5,6 +5,7 @@ package com.accedo.colourmemory.fragments;
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
     public static final String TAG = MainFragment.class.getSimpleName();
 
     private CardGridLayout mGrid;
+    private boolean mIsEnd = false;
 
     public MainFragment() {
 
@@ -74,7 +76,7 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
 
                 Intent intent = new Intent(mActivity, HighScoresActivity.class);
 
-                startActivity(intent);
+                mActivity.startActivityForResult(intent, Constants.REQUEST_CODE);
 
                 break;
             case R.id.menu_action_reset:
@@ -96,6 +98,7 @@ public class MainFragment extends BaseFragment implements OnScoringListener {
 
     @Override
     public void onScore(int score, boolean isEnd) {
+        mIsEnd = isEnd;
         mListener.onFragmentInteraction(TAG, MainActivity.InteractionType.SCORE, score, isEnd);
     }
 }

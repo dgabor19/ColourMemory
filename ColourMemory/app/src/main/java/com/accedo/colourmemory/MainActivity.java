@@ -5,12 +5,17 @@ package com.accedo.colourmemory;
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import com.accedo.colourmemory.fragments.BaseFragment;
 import com.accedo.colourmemory.fragments.MainFragment;
 import com.accedo.colourmemory.fragments.NameDialogFragment;
+import com.accedo.colourmemory.utils.Constants;
 
 /**
  * Launcher Activity which represents the card table
@@ -19,7 +24,7 @@ public class MainActivity extends BaseActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private int mScore = 0;
-    private int mRounds = 0;
+    private boolean mIsEnd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,7 @@ public class MainActivity extends BaseActivity {
 
     /**
      * Callback from the fragment
+     *
      * @param fragment
      * @param type
      * @param params
@@ -47,15 +53,14 @@ public class MainActivity extends BaseActivity {
 
                     if (params != null && params.length > 0) {
                         int scoreRound = (int) params[0];
-                        boolean isEnd = (boolean) params[1];
+                        mIsEnd = (boolean) params[1];
 
-                        ++mRounds;
                         mScore += scoreRound;
 
                         ((TextView) mToolbar.findViewById(R.id.textScore))
                                 .setText(String.format(getString(R.string.score), mScore));
 
-                        if (isEnd) {
+                        if (mIsEnd) {
                             NameDialogFragment dialog = NameDialogFragment.newInstance(mScore);
                             dialog.show(mFragmentManager, NameDialogFragment.TAG);
                         }
@@ -71,7 +76,6 @@ public class MainActivity extends BaseActivity {
      */
     public void reset() {
         mScore = 0;
-        mRounds = 0;
         ((TextView) mToolbar.findViewById(R.id.textScore))
                 .setText(String.format(getString(R.string.score), mScore));
 
@@ -82,4 +86,32 @@ public class MainActivity extends BaseActivity {
         return mScore;
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (Constants.REQUEST_CODE == requestCode) {
+            if (Activity.RESULT_OK == resultCode) {
+                if (!mIsEnd) {
+                    return;
+                }
+
+                // Showing a dialog to offer table reset
+                BaseFragment.getAlertDialog(this, null,
+                        getString(R.string.new_game),
+                        false, R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                reset();
+                            }
+                        }, R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
+            }
+        }
+    }
 }

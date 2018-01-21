@@ -17,7 +17,7 @@ import java.util.List;
 public class CardGenerator {
     public static final String TAG = CardGenerator.class.getSimpleName();
 
-    private List<Card> AVAILABLE_CARDS = Arrays.asList(
+    private List<Card> CARDS = Arrays.asList(
             new Card(Card.Colour.RED, false, false),
             new Card(Card.Colour.YELLOW, false, false),
             new Card(Card.Colour.GREEN, false, false),
@@ -50,9 +50,10 @@ public class CardGenerator {
      * @return
      */
     public List<Card> getShuffledCards() {
-        List<Card> shuffledCards = Arrays.asList(new Card[AVAILABLE_CARDS.size()]);
-        Collections.copy(shuffledCards, AVAILABLE_CARDS);
+        List<Card> shuffledCards = Arrays.asList(new Card[CARDS.size()]);
+        Collections.copy(shuffledCards, CARDS);
 
+        Collections.shuffle(shuffledCards);
         Collections.shuffle(shuffledCards);
 
         return shuffledCards;

@@ -12,4 +12,6 @@ public class Constants {
     public static final int NO_MATCH_SCORE = -1;
 
     public static final String PARAM_ID = "id";
+
+    public static final int REQUEST_CODE = 111;
 }

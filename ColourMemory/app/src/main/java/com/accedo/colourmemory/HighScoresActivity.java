@@ -1,6 +1,7 @@
 package com.accedo.colourmemory;
 
-import android.content.res.Configuration;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import com.accedo.colourmemory.fragments.HighScoresFragment;
@@ -23,7 +24,6 @@ public class HighScoresActivity extends BaseActivity {
 
         long currentId = getIntent().getLongExtra(Constants.PARAM_ID, 0l);
 
-
         List<Score> scores = mDataSource.getAllScores();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -41,9 +41,21 @@ public class HighScoresActivity extends BaseActivity {
         highScoresFragment.setHighScores(currentId, scores);
     }
 
+    @Override
+    public void onBackPressed() {
+        navigateBack();
+    }
 
     @Override
     public void onFragmentInteraction(String fragment, InteractionType type, Object... params) {
+        if (InteractionType.BACK.equals(type)) {
+            navigateBack();
+        }
+    }
 
+    private void navigateBack() {
+        Intent intent = new Intent();
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

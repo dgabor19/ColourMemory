@@ -115,22 +115,22 @@ public class NameDialogFragment extends DialogFragment implements View.OnClickLi
 
                     Intent intent = new Intent(getActivity(), HighScoresActivity.class);
                     intent.putExtra(Constants.PARAM_ID, id);
-                    startActivity(intent);
+                    getActivity().startActivityForResult(intent, Constants.REQUEST_CODE);
 
-                    // Showing a dialog to offer table reset
-                    BaseFragment.getAlertDialog(activity, null,
-                            getString(R.string.new_game),
-                            false, R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    activity.reset();
-                                }
-                            }, R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    activity.finish();
-                                }
-                            }).show();
+//                    // Showing a dialog to offer table reset
+//                    BaseFragment.getAlertDialog(activity, null,
+//                            getString(R.string.new_game),
+//                            false, R.string.ok, new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    activity.reset();
+//                                }
+//                            }, R.string.cancel, new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    activity.finish();
+//                                }
+//                            }).show();
                 }
 
                 break;

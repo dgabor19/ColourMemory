@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.accedo.colourmemory.BaseActivity;
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.models.Score;
 import com.accedo.colourmemory.views.ScoreTableLayout;
@@ -60,7 +61,7 @@ public class HighScoresFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mActivity.finish();
+                mListener.onFragmentInteraction(TAG, BaseActivity.InteractionType.BACK);
 
         }
         return super.onOptionsItemSelected(item);

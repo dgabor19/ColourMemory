@@ -35,7 +35,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnFragme
     protected ScoreDataSource mDataSource;
 
     public enum InteractionType {
-        SCORE
+        SCORE,
+        BACK
     }
 
     @Override
