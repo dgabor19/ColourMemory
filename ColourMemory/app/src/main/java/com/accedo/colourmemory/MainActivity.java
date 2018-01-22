@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity {
      * Reset the table (new game)
      */
     public void reset() {
+        mIsEnd = false;
         mScore = 0;
         ((TextView) mToolbar.findViewById(R.id.textScore))
                 .setText(String.format(getString(R.string.score), mScore));

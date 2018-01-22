@@ -5,7 +5,6 @@ package com.accedo.colourmemory.fragments;
  * Copyright (c) 2015 ColourMemory. All rights reserved.
  */
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.accedo.colourmemory.R;
 import com.accedo.colourmemory.interfaces.OnScoringListener;
+import com.accedo.colourmemory.manager.CardRulesManager;
 import com.accedo.colourmemory.models.Card;
 import com.accedo.colourmemory.utils.CardGenerator;
 import com.accedo.colourmemory.utils.CardUtils;
@@ -57,6 +58,7 @@ public class CardGridLayout extends LinearLayoutCompat {
 
     /**
      * Initialize the layout after creating
+     *
      * @param columnCount
      * @param rowCount
      * @param listener
@@ -82,35 +84,41 @@ public class CardGridLayout extends LinearLayoutCompat {
 
             // Columns
             for (int j = 0; j < columnCount; j++) {
-                final View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_card, this, false);
+                View cardView = getCardView(i, j, cardFaceBitmap.getWidth(), cardFaceBitmap.getHeight());
 
-                ((ImageView) view.findViewById(R.id.imageFaceCard)).setImageResource(mCards.get(i * columnCount + j).getColour().resId);
-
-                final View card = view.findViewById(R.id.card);
-
-                card.setTag(R.string.tag_row, i);
-                card.setTag(R.string.tag_column, j);
-
-                card.setOnClickListener(onClickListener);
-
-                // Resizing card view height according to images aspect-ratio
-                view.post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        LinearLayoutCompat.LayoutParams params = (LinearLayoutCompat.LayoutParams) view.getLayoutParams();
-                        params.height = (int)((float)view.getWidth() * (float)cardFaceBitmap.getHeight() / (float)cardFaceBitmap.getWidth());
-
-
-                        view.setLayoutParams(params);
-                    }
-                });
-
-                rowLayout.addView(view);
+                rowLayout.addView(cardView);
             }
 
             addView(rowLayout, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
+    }
+
+    private View getCardView(final int row, final int column, final int width, final int height) {
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_card, this, false);
+
+        ((ImageView) view.findViewById(R.id.imageFaceCard)).setImageResource(mCards.get(row * mColumnCount + column).getColour().resId);
+
+        final View card = view.findViewById(R.id.card);
+
+        card.setTag(R.string.tag_row, row);
+        card.setTag(R.string.tag_column, column);
+
+        card.setOnClickListener(onClickListener);
+
+        // Resizing card view height according to images aspect-ratio
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+
+                LinearLayoutCompat.LayoutParams params = (LinearLayoutCompat.LayoutParams) view.getLayoutParams();
+                params.height = (int) ((float) view.getWidth() * (float) height / (float) width);
+
+
+                view.setLayoutParams(params);
+            }
+        });
+
+        return view;
     }
 
     private OnClickListener onClickListener = new OnClickListener() {
@@ -130,7 +138,7 @@ public class CardGridLayout extends LinearLayoutCompat {
 
                 card.setFaceUp(!card.isFaceUp());
 
-                cardOnFaceSum = getCardsCountWithFaceUp(mCards);
+                cardOnFaceSum = CardRulesManager.getCardsCountWithFaceUp(mCards);
 
                 // Animate the card to face up
                 CardUtils.animateCardFlip(getContext(), v, null);
@@ -157,7 +165,7 @@ public class CardGridLayout extends LinearLayoutCompat {
                             otherCardFaceUp.setPaired(true);
 
                             if (mListener != null) {
-                                int cardPairedSum = getPairedCardsCount(mCards);
+                                int cardPairedSum = CardRulesManager.getPairedCardsCount(mCards);
 
                                 // Notifying the fragment about match or
                                 // game over, all card faced up and paired
@@ -188,38 +196,15 @@ public class CardGridLayout extends LinearLayoutCompat {
                             getHandler().postDelayed(new DelayTask(cardsToFaceDown), 1000);
                         }
                     }
+                } else {
+                    if (mListener != null) {
+                        mListener.onScore(Constants.NO_MATCH_SCORE, false);
+                    }
                 }
             }
         }
     };
 
-    /**
-     * Counting the cards with face up
-     *
-     * @param cards
-     * @return
-     */
-    private static int getCardsCountWithFaceUp(final List<Card> cards) {
-        int cardOnFaceSum = 0;
-        for (Card c : cards) {
-            if (c.isFaceUp() && !c.isPaired()) {
-                ++cardOnFaceSum;
-            }
-        }
-
-        return cardOnFaceSum;
-    }
-
-    private static int getPairedCardsCount(final List<Card> cards) {
-        int cardPairedSum = 0;
-        for (Card c : cards) {
-            if (c.isPaired()) {
-                ++cardPairedSum;
-            }
-        }
-
-        return cardPairedSum;
-    }
 
     private class DelayTask implements Runnable {
 
@@ -258,5 +243,7 @@ public class CardGridLayout extends LinearLayoutCompat {
                 mListener.onScore(Constants.NO_MATCH_SCORE, false);
             }
         }
-    };
+    }
+
+    ;
 }
